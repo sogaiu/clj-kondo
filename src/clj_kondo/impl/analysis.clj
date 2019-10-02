@@ -5,7 +5,7 @@
   (:require [clj-kondo.impl.utils :refer [assoc-some select-some]]))
 
 (defn reg-usage! [{:keys [analysis] :as _ctx}
-                  filename row col from-ns to-ns var-name arity lang metadata]
+                  filename row col from-ns to-ns full-fn-name var-name arity lang metadata]
   (let [to-ns (or (some-> to-ns meta :raw-name) to-ns)]
     (swap! analysis update :var-usages conj
            (assoc-some
@@ -21,6 +21,7 @@
                            :fixed-arities
                            :var-args-min-arity
                            :deprecated]))
+            :full-fn-name full-fn-name
             :arity arity
             :lang lang))))
 

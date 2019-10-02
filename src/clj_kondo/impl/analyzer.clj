@@ -1061,6 +1061,7 @@
             call (cond-> {:type :call
                           :resolved-ns resolved-namespace
                           :ns ns-name
+                          :full-fn-name full-fn-name
                           :name (with-meta
                                   (or resolved-name full-fn-name)
                                   (meta full-fn-name))

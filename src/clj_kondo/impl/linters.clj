@@ -241,13 +241,14 @@
                              row (:row call)
                              col (:col call)
                              filename (:filename call)
+                             full-fn-name (:full-fn-name call)
                              fn-ns (:ns called-fn)
                              resolved-ns (or fn-ns resolved-ns)
                              arity (:arity call)
                              _ (when output-analysis?
                                  (analysis/reg-usage! ctx
                                                       filename row col caller-ns-sym
-                                                      resolved-ns fn-name arity
+                                                      resolved-ns full-fn-name fn-name arity
                                                       (when (= :cljc base-lang)
                                                         call-lang) called-fn))]
                        :when valid-call?
