@@ -246,10 +246,16 @@
                              arity (:arity call)
                              _ (when output-analysis?
                                  (analysis/reg-usage! ctx
-                                                      filename row col caller-ns-sym
-                                                      resolved-ns fn-name arity
-                                                      (when (= :cljc base-lang)
-                                                        call-lang) called-fn))]
+                                                      (cond-> {:filename filename
+                                                               :row row
+                                                               :col col
+                                                               :from-ns caller-ns-sym
+                                                               :to-ns resolved-ns
+                                                               :var-name fn-name
+                                                               :arity arity
+                                                               :metadata called-fn}
+                                                        (= :cljc base-lang)
+                                                        (assoc :lang call-lang))))]
                        :when valid-call?
                        :let [fn-name (:name called-fn)
                              _ (when (and unresolved?

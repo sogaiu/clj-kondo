@@ -317,17 +317,25 @@
                                     #(assoc % 'cljs.core 'cljs.core
                                             'clojure.core 'cljs.core)))]
     (when (-> ctx :config :output :analysis)
-      (analysis/reg-namespace! ctx filename row col
-                               ns-name false (assoc-some {}
-                                                         :deprecated (:deprecated ns-meta)
-                                                         :doc docstring
-                                                         :added (:added ns-meta)
-                                                         :no-doc (:no-doc ns-meta)
-                                                         :author (:author ns-meta)))
+      (analysis/reg-namespace! ctx {:filename filename
+                                    :row row
+                                    :col col
+                                    :ns-name ns-name
+                                    :in-ns false
+                                    :metadata (assoc-some {}
+                                                :deprecated (:deprecated ns-meta)
+                                                :doc docstring
+                                                :added (:added ns-meta)
+                                                :no-doc (:no-doc ns-meta)
+                                                :author (:author ns-meta))})
       (doseq [req (:required ns)]
         (let [{:keys [row col alias]} (meta req)]
-          (analysis/reg-namespace-usage! ctx filename row col ns-name
-                                         req alias))))
+          (analysis/reg-namespace-usage! ctx {:filename filename
+                                              :row row
+                                              :col col
+                                              :from-ns ns-name
+                                              :to-ns req
+                                              :alias alias}))))
     (namespace/reg-namespace! ctx ns)
     ns))
 

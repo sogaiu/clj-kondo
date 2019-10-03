@@ -4,8 +4,9 @@
   (:refer-clojure :exclude [ns-name])
   (:require [clj-kondo.impl.utils :refer [assoc-some select-some]]))
 
-(defn reg-usage! [{:keys [analysis] :as _ctx}
-                  filename row col from-ns to-ns var-name arity lang metadata]
+(defn reg-usage! [{:keys [:analysis] :as _ctx}
+                  {:keys [:filename :row :col :from-ns :to-ns :var-name
+                          :arity :lang :metadata]}]
   (let [to-ns (or (some-> to-ns meta :raw-name) to-ns)]
     (swap! analysis update :var-usages conj
            (assoc-some
@@ -25,7 +26,7 @@
             :lang lang))))
 
 (defn reg-var! [{:keys [:analysis :base-lang :lang] :as _ctx}
-                filename row col ns name attrs]
+                {:keys [:filename :row :col :ns :name :attrs]}]
   (let [attrs (select-keys attrs [:private :macro :fixed-arities :var-args-min-arity
                                   :doc :added :deprecated])]
     (swap! analysis update :var-definitions conj
@@ -39,7 +40,8 @@
             :lang (when (= :cljc base-lang) lang)))))
 
 (defn reg-namespace! [{:keys [:analysis :base-lang :lang] :as _ctx}
-                      filename row col ns-name in-ns metadata]
+                      {:keys [:filename :row :col :ns-name :in-ns
+                              :metadata]}]
   (swap! analysis update :namespace-definitions conj
          (assoc-some
           (merge {:filename filename
@@ -51,7 +53,8 @@
           :lang (when (= :cljc base-lang) lang))))
 
 (defn reg-namespace-usage! [{:keys [:analysis :base-lang :lang] :as _ctx}
-                            filename row col from-ns to-ns alias]
+                            {:keys [:filename :row :col :from-ns :to-ns
+                                    :alias]}]
   (let [to-ns (or (some-> to-ns meta :raw-name) to-ns)]
     (swap! analysis update :namespace-usages conj
            (assoc-some

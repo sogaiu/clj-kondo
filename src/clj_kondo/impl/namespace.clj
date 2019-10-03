@@ -34,9 +34,12 @@
      (when (and (-> ctx :config :output :analysis)
                 (not (:temp metadata)))
        (let [{:keys [:row :col]} (meta expr)]
-         (analysis/reg-var! ctx filename row col
-                            ns-sym var-sym
-                            metadata)))
+         (analysis/reg-var! ctx {:filename filename
+                                 :row row
+                                 :col col
+                                 :ns ns-sym
+                                 :name var-sym
+                                 :attrs metadata})))
      (swap! namespaces update-in path
             (fn [ns]
               (let [vars (:vars ns)
